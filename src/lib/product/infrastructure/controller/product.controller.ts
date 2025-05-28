@@ -27,34 +27,23 @@ export class ProductController {
     @Headers('authorization') authHeader: string,
   ) {
     try {
-      console.log('Entrando a ProductController.create');
-      console.log('Body recibido:', productDto);
-      console.log('Authorization header:', authHeader);
-
       if (!authHeader) {
-        console.error('Token no proporcionado');
         throw new UnauthorizedException('Token no proporcionado');
       }
       const token = authHeader.split(' ')[1];
       const decoded = this.jwtProvider.verifyToken(token);
-      console.log('Token decodificado:', decoded);
       const userId = decoded.uuid;
 
       if (!userId) {
-        console.error('Token inválido: userId/sub no presente');
         throw new UnauthorizedException(
           'Token inválido: userId/sub no presente',
         );
       }
 
-      console.log('userId extraído:', userId);
-
       const newProduct = await this.createProductUseCase.run(
         productDto,
         userId,
       );
-
-      console.log('Producto creado:', newProduct);
 
       return ResponseAdapter.set(
         HttpStatus.CREATED,
@@ -63,7 +52,6 @@ export class ProductController {
         true,
       );
     } catch (error) {
-      console.error('Error en ProductController.create:', error);
       throw error;
     }
   }

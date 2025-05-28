@@ -16,7 +16,6 @@ export class ProductService implements IProductService {
     try {
       // Validar userId
       if (!productDto.userId) {
-        console.error('userId no puede ser vacío');
         throw new Error('userId no puede ser vacío');
       }
 
@@ -27,17 +26,12 @@ export class ProductService implements IProductService {
         createdAt: new Date().toISOString(),
       };
 
-      console.log('Objeto a guardar en DynamoDB:', dynamoProduct);
-      console.log('PRODUCTS_TABLE:', process.env.PRODUCTS_TABLE);
-
       await this.dynamoClient.send(
         new PutCommand({
           TableName: process.env.PRODUCTS_TABLE, // Usa la variable de entorno
           Item: dynamoProduct,
         }),
       );
-
-      console.log('Producto guardado en DynamoDB:', dynamoProduct);
 
       // Responder con id (mapeando uuid a id)
       return {
@@ -50,7 +44,6 @@ export class ProductService implements IProductService {
         createdAt: dynamoProduct.createdAt,
       };
     } catch (error) {
-      console.error('Error en ProductService:', error);
       throw error;
     }
   }
